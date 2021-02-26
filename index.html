@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Photo Uploading and Cropping Tool</title>
+
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    -->
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script> 
+    <style>
+        canvas {
+            width: 80%;
+            height: auto;
+        }
+        
+        #gettingstarted {
+            width: 100%;
+            height: auto;
+        }
+        @media only screen and (min-width: 500px) { 
+            canvas {
+                width: 400px;
+                height: auto;
+            }
+
+            #gettingstarted {
+                width: 500px;
+                height: auto;
+            }
+        }
+
+
+        #myCanvasTop { position: absolute; z-index: 2}
+        #myCanvas    { position: absolute; z-index: 1}
+
+        .fixed-bottom {
+            position: fixed;
+            margin: auto;
+            height: 100px;
+            width: 100%;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1030;
+        }
+    </style>
+</head>
+
+<body>
+
+        <div class="container-fluid">
+            <h3>Crop photo to 400px by 514px</h3>
+
+            <div class="alert alert-danger" role="alert" id="alert2">
+                
+                <p id="starthints" class="mb-1 lead">This tool works best on Chrome on Android phones / Desktop computers & Laptops and Safari on iPhones / iPads.</p>
+            </div>
+            <p id="hints" class="mb-1 lead">ERROR: Your browser does not support this application.  Please try it with another browser.</p>
+            <div class="input-group my-0">
+                <input id="fileTocrop" type="file" class="form-control"  aria-describedby="basic-addon2">
+            </div>
+        
+            <div class="input-group mb-1" id="fileInput">
+                <input id="fileTosave" type="text" class="form-control" placeholder="NRIC no. Eg T1111111Z" aria-label="NRIC no. Eg T1111111Z" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                  <span id="labelTosave" class="input-group-text" id="basic-addon2">.jpg</span>
+                </div>
+            </div>
+        
+            <div class="row" id="allCanvas">
+                <div id="col2">
+                    <canvas  id="myCanvasTop"></canvas>
+                    <canvas  id="myCanvas"></canvas>
+                </div>
+                <div id="col3">
+                    <canvas  id="myCropcanvas"></canvas>
+                </div>
+                <div id="col4">
+                    <canvas  id="myTempcanvas"></canvas>
+                </div>
+            </div>
+        
+            <div class="fixed-bottom">
+                <button class="btn btn-primary btn-lg" id="btnRotate" disabled>Rotate photo</button>
+                <button class="btn btn-primary btn-lg" id="btnFlip" disabled>Flip selfie</button>
+                <button class="btn btn-primary btn-lg" id="btnClearrect" disabled>Clear rectangle</button>
+                <button class="btn btn-primary btn-lg" id="btnCrop" disabled>Crop photo</button>
+                <button class="btn btn-primary btn-lg" id="btnSave" disabled>Save photo</button>
+                <button class="btn btn-primary btn-lg" id="btnRestart" disabled>Start all over</button>
+            </div>
+        </div>
+
+
+
+<!--Copyright (C) 2018 Puah Hock Leng - All Rights Reserved
+    Puah_Hock_Leng&#64;ite&#46;edu&#46;sg  -->
+    <script>$(document).ready(function(){var t=$("#hints"),e=$("#alert1"),a=$("#alert2"),o=$("#fileTocrop"),i=$("#fileTosave"),s=$("#labelTosave"),r=$("#btnRotate"),n=$("#btnFlip"),h=$("#btnClearrect"),l=$("#btnCrop"),c=$("#btnSave"),d=$("#btnRestart"),p=$("#myCanvas"),m=p[0],g=m.getContext("2d"),u=$("#myCanvasTop"),v=u[0],b=v.getContext("2d");b.globalAlpha=.2;var f,w=$("#myCropcanvas"),C=w[0],y=C.getContext("2d"),k=$("#myTempcanvas")[0],M=k.getContext("2d"),R=$("#col2"),T=$("#col3"),x=$("#col4"),I=!1,A=!1,D=!1,P=5,S=!1,L=/ipad|iphone|ipod/i.test(navigator.userAgent.toLowerCase()),j=/msie|trident|edge/i.test(navigator.userAgent.toLowerCase()),U=/crios/i.test(navigator.userAgent.toLowerCase()),O=/webkit/i.test(navigator.userAgent.toLowerCase()),Y=["Rotate/Flip photo if necessary.  Tap, hold and drag on image to draw a rectangle crop area . . .","Tap, hold and drag on the photo to draw a rectangle area to crop it to size . . . . . . . . . . .","Click on ‘Clear rectangle’ to start again.  Click ‘Crop photo’ if you are satisfied with it . . .","Type in the filename to save as and click ‘Save photo’. Otherwise, click 'Start all over'.","Select a photo from your device to crop.","Only Safari browser is supported on iPhones/iPads.  Your browser is not supported!","Only Chrome browser is supported on Desktop computers/Laptops.  Your browser is not supported!"];L&&O&&U?t.html("<div class='alert alert-danger' role='alert'>"+Y[5]+"</div>"):j?t.html("<div class='alert alert-danger' role='alert'>"+Y[6]+"</div>"):t.text(Y[4]);var E,F;E=m.getBoundingClientRect(),F=window.devicePixelRatio,m.width=Math.round(F*E.right)-Math.round(F*E.left),m.height=Math.round(F*E.bottom)-Math.round(F*E.top),g.scale(F,F),i.hide(),s.hide(),p.hide(),r.hide(),n.hide(),h.hide(),l.hide(),c.hide(),d.hide();var z,B,W=new Image;o.on("change",function(i){t.text(Y[0]),e.hide(),a.hide();var s=new FileReader;s.onload=function(t){W.onload=function(){z=W.width,B=W.height,z>B?z>480&&(B*=480/z,z=480):B>360&&(z*=360/B,B=360),v.width=m.width=z,v.height=m.height=B,g.drawImage(W,0,0,z,B),P=Math.round(5/480*z)},W.src=t.target.result},s.readAsDataURL(i.target.files[0]),p.fadeIn(),R.addClass("col-12"),r.removeAttr("disabled").fadeIn(),n.removeAttr("disabled").fadeIn(),o.hide(),I=!0,D=!0});var X=1,G=!1;r.on("click",function(e){t.text(Y[0]),G=!0,V(),X++,G=!1,I=!0});var J=1,N=!1;n.on("click",function(e){t.text(Y[0]),N=!0,V(),J++,N=!1,I=!0});var V=function(){g.clearRect(0,0,m.width,m.height);var t=G?X:X-1;t%2==0?(v.width=m.width=z,v.height=m.height=B):(v.width=m.width=B,v.height=m.height=z),g.save(),t%2==0?g.translate(z/2,B/2):g.translate(B/2,z/2),g.rotate(90*t*Math.PI/180),g.translate(-z/2,-B/2),(N?J:J-1)%2==0||(t%2==0?(g.translate(z,0),g.scale(-1,1)):(g.translate(0,B),g.scale(1,-1))),g.drawImage(W,0,0,z,B),g.restore()},Z="";$(window).on("scroll",function(e){Z=t.html(),!S&&D&&h.trigger("click"),t.html(Z)}),$(window).on("resize",function(e){Z=t.html(),!S&&D&&h.trigger("click"),t.html(Z)}),h.on("click",function(e){t.text(Y[1]),A=!1,ct(),b.clearRect(0,0,m.width,m.height),I=!0,l.hide()}),l.on("click",function(){if(A){if(t.text(Y[3]),h.hide(),l.hide(),c.removeAttr("disabled").fadeIn(),d.removeAttr("disabled").fadeIn(),at>it){var e=at;at=it,it=e}if(ot>st){e=ot;ot=st,st=e}f=g.getImageData(at,ot,it-at,st-ot),k.width=it-at,k.height=st-ot,M.putImageData(f,0,0),C.width=400,C.height=514;var a=new Image;a.onload=function(){y.drawImage(a,0,0,400,514)},a.src=k.toDataURL(),R.remove(),T.addClass("col-12 col-sm-12"),x.remove(),i.show(),s.show(),S=!0}else $("#btnCrop").html("Draw a Rectangle before cropping!"),setTimeout(function(){$("#btnCrop").html("Crop photo")},3e3)});var q=$("#fileInput"),H=$("#allCanvas");c.on("click",function(){if(L||j)if(j){var e="<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Photo Uploading and Cropping Tool</title><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css'><script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js'><\/script></head><body><div class='container-fluid'><p class='mb-1'><div class='alert alert-primary' role='alert'>Right click on the image, select 'Save picture as' to save.</p></div> <div class='text-center'><img src='"+w[0].toDataURL("image/jpeg",1)+"' alt='from canvas'/></div><p class='mb-1'><div class='alert alert-success' role='alert'>Then access <a href='https://ite-photo.the-asp.com/'>ite-photo.the-asp.com</a> to submit the saved photo.</div></p></div></body></html>";(a=window.open()).document.write(e),a?a.focus():alert("Please allow popups for this website")}else{var a;e="<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Photo Uploading and Cropping Tool</title><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css'><script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js'><\/script></head><body><div class='container-fluid'><p class='mb-1'><div class='alert alert-danger' role='alert'><strong>IMAGE NOT SAVED! Tap and hold on the image, tap the 'Save Image' OR 'Add to Photos' button to save. [Watch Demo at the bottom]</strong></div></p><div class='text-center'><img src='"+w[0].toDataURL("image/jpeg",1)+"' alt='from canvas'/></div><p class='mb-1'><div class='alert alert-success' role='alert'>Then access <a href='https://ite-photo.the-asp.com/'>ite-photo.the-asp.com</a> to submit the saved photo.</div></p><img style ='width:100%; height:auto;' src='https://puahhockleng.github.io/photocrop/MyMovie2.gif' alt='demo' ></div></body></html>";(a=window.open()).document.write(e),a?a.focus():alert("Please allow popups for this website")}else{var o=document.createElement("a");o.style="position: fixed; left -10000px;",o.href="data:application/octet-stream;base64,"+encodeURIComponent(w[0].toDataURL("image/jpeg").replace(/^data:image\/\w+;base64,/,"")),o.download=""==i.val()?"T1111111Z.jpg":i.val()+".jpg",document.body.appendChild(o),o.click(),document.body.removeChild(o),t.html("<div class='alert alert-primary' role='alert'>Then access <a href='https://ite-photo.the-asp.com/'>ite-photo.the-asp.com</a> to submit the saved photo.</div>"),c.hide(),d.hide(),q.hide(),H.hide()}}),d.on("click",function(){c.hide(),d.hide(),location.reload()}),u.on("mousedown touchstart",function(t){D&&!S&&(I||h.trigger("click"),rt=!0,nt(t),ht(K,Q,!1))}),u.on("mousemove touchmove",function(t){rt&&!S&&(nt(t),ht(K,Q,!0),lt())}),u.on("mouseup touchend",function(){rt&&!S&&A&&(t.text(Y[2]),lt(),ct(),I=!1)}),u.on("mouseleave touchcancel",function(){rt&&!S&&A&&(t.text(Y[2]),lt(),ct(),I=!1)});var K=0,Q=0,_=new Array,tt=new Array,et=new Array,at=0,ot=0,it=0,st=0,rt=!1,nt=function(t){var e=m.getBoundingClientRect(),a=m.width/e.width,o=m.height/e.height;t.touches?(K=(t.touches[0].pageX-e.left)*a,Q=(t.touches[0].pageY-e.top)*o,t.preventDefault()):(K=(t.clientX-e.left)*a,Q=(t.clientY-e.top)*o)},ht=function(t,e,a){_.push(t),tt.push(e),et.push(a)},lt=function(){b.strokeStyle="#df4b26",b.lineJoin="round",b.lineWidth=P,_.length>0&&(b.clearRect(0,0,m.width,m.height),at=_[0],ot=tt[0],it=_[_.length-1],st=tt[tt.length-1],at<it&&ot<st?(Math.abs(it-at)/Math.abs(st-ot)<400/514?st=1.285*(it-at)+ot:it=400/514*(st-ot)+at,b.strokeRect(at,ot,Math.abs(it-at),Math.abs(st-ot))):at>it&&ot<st?(Math.abs(it-at)/Math.abs(st-ot)<400/514?st=1.285*(at-it)+ot:it=at-400/514*(st-ot),b.strokeRect(it,ot,Math.abs(it-at),Math.abs(st-ot))):at<it&&ot>st?(Math.abs(it-at)/Math.abs(st-ot)<400/514?st=1.285*(it-at)+ot:it=400/514*(ot-st)+at,b.strokeRect(at,st,Math.abs(it-at),Math.abs(st-ot))):(Math.abs(it-at)/Math.abs(st-ot)<400/514?st=1.285*(at-it)+ot:it=at-400/514*(ot-st),b.strokeRect(it,st,Math.abs(it-at),Math.abs(st-ot))),it!=at&&(A=!0,h.removeAttr("disabled").fadeIn(),l.removeAttr("disabled").fadeIn(),r.hide(),n.hide()))},ct=function(){_.length=0,tt.length=0,et.length=0,rt=!1};$('a[data-toggle="tab"]').on("show.bs.tab",function(t){localStorage.setItem("activeTab",$(t.target).attr("href"))});var dt=localStorage.getItem("activeTab");dt&&$('#myTab a[href="'+dt+'"]').tab("show")});</script>
+    </body>
+</html>
